@@ -3,6 +3,7 @@ const AdminBroExpress = require('@admin-bro/express');
 const AdminBroMongoose = require('admin-bro-mongoose');
 const bcrypt = require('bcrypt');
 const {COOKIE_NAME, SECRET} = require('../config/config');
+const uploadFeature = require('@admin-bro/upload')
 
 const mongoose = require('mongoose');
 
@@ -17,13 +18,26 @@ module.exports = {
       useUnifiedTopology: true,
     });
 
+    const Galerie = require('./models/Galerie');
     const User = require('./models/User');
     
     const adminBro = new AdminBro({
       databases: [db],
+      resources: [
+        {
+          resource: User,
+          options: {
+            properties: {
+              password: {
+                type: 'password'
+              }
+            }
+          },
+        },
+      ]
     });
 
-    return AdminBroExpress.buildAuthenticatedRouter(adminBro, {
+    const adminRouter =  AdminBroExpress.buildAuthenticatedRouter(adminBro, {
       authenticate: async (email, password) => {
 
         const user = await User.findOne( {eMail: email} );
@@ -38,5 +52,7 @@ module.exports = {
       cookieName: COOKIE_NAME,
       cookiePassword: SECRET,
     });
+
+    return adminRouter;
   }
 };
