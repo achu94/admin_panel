@@ -14,12 +14,14 @@ module.exports = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+
+    require('./models/User');
     
     const adminBro = new AdminBro({
       databases: [db],
     });
 
     const router = AdminBroExpress.buildRouter(adminBro);
-    return await router;
+      return router;
   }
 };
