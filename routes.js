@@ -1,9 +1,11 @@
 const router = require('express').Router();
 
 const homeController = require('./controllers/homeController');
-const adminController = require('./controllers/adminController');
+
+const adminController = require('./controllers/adminController').router().then( (res) => {
+    return router.use('/admin', res);
+} );
 
 router.use('/', homeController);
-router.use('/admin', adminController);
 
 module.exports = router;
