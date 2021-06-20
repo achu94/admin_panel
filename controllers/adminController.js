@@ -1,23 +1,15 @@
-const AdminBroExpress = require('@admin-bro/express');
-const AdminBroMongoose = require('admin-bro-mongoose');
-const AdminBro = require('admin-bro');
+const adminServices = require('../admin/services');
 
-AdminBro.registerAdapter(AdminBroMongoose)
 
-async function run() {
-    const db = await require('../config/mongoose');
-
-    const adminBro = new AdminBro({
-      databases: [db],
-      //... other AdminBroOptions
+function router(){
+    return adminServices.router().then((res) => {
+        return res;
     });
+}
 
-    const router = AdminBroExpress.buildRouter(adminBro);
-    return router;
+module.exports = {
+    router: async () => {
+        const admin_router = await adminServices.router();
+        return admin_router;
+    }
 };
-
-const router = run().then ((res) => {
-    return res;
-});
-
-module.exports = router;
